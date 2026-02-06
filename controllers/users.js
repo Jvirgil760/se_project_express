@@ -25,16 +25,19 @@ const createUser = (req, res) => {
 };
 
 const getUser = (req, res) => {
-  const { userid } = req.params;
+  const { userId } = req.params;
+  
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send(user))
     .catch((err) => {
       console.error(err);
       if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: "User not found" });
       } else if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: "Invalid user ID" });
       }
-      return res.status(500).send({ message: err.message });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: "Internal server errror" });
     });
 };
 

@@ -9,17 +9,13 @@ const mainRouter = require("./routes/index");
 const app = express();
 
 app.use(express.json()); // ✅ put BEFORE routes
+app.use("/", mainRouter);
 
 mongoose
   .connect(MONGODB_URI)
   .then(() => console.log("Connected to MongoDB Atlas!"))
   .catch(console.error);
 
-
-const routes = require("./routes")   
-app.use(routes)
-
-app.use("/", mainRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
