@@ -8,8 +8,6 @@ const {
 } = require("../controllers/clothingItem");
 
 const router = require("express").Router();
-router.put("/:itemId/likes", likeItem);
-router.delete("/:itemId/likes", unlikeItem);
 //CRUD
 
 //Create
