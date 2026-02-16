@@ -19,10 +19,9 @@ app.use("/", mainRouter);
 
 mongoose
   .connect(MONGODB_URI)
-  .then(() => console.log("Connected to MongoDB Atlas!"))
   .catch(console.error);
 
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  // (`Server is running on port ${PORT}`);
 });
