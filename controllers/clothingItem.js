@@ -63,10 +63,16 @@ const unlikeItem = (req, res) => {
 
 const getItems = (req, res) => {
   ClothingItem.find({})
-    .then((items) => res.status(200).send(items))
-    .catch((e) => {
-      res.status(INTERNAL_SERVER_ERROR).send({ message: "Error from getItems", e });
-    });
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+       return res.status(NOT_FOUND).send({ message: "Item not found" });
+     }
+     if (err.name === "CastError") {
+       return res.status(BAD_REQUEST).send({ message: "Invalid item ID" });
+     }
+     return res.status(INTERNAL_SERVER_ERROR).send({ message: "An error has occured on the server" });
+   });
 };
 
 const deleteItem = (req, res) => {
