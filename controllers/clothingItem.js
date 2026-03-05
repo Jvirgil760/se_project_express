@@ -94,14 +94,14 @@ const deleteItem = (req, res) => {
       console.error(err);
 
       if (err.name === "DocumentNotFoundError") {
-        return res.status(404).send({ message: "Item not found" });
+        return res.status(NOT_FOUND).send({ message: "Item not found" }); // ✅ Using constant!
       }
 
       if (err.name === "CastError") {
-        return res.status(400).send({ message: "Invalid item id" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid item id" });
       }
 
-      return res.status(500).send({ message: "Server error" });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: "Server error" });
     });
 };
 
