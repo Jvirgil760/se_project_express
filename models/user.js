@@ -18,6 +18,40 @@ const userSchema = new mongoose.Schema({
           message: "You must enter a valid URL",
       },
   },
-});
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    validate: {
+      validator: (v) => validator.isEmail(v),
+      message: "Email is not valid",
+    },
+  },
+
+  password: {
+    type: String,
+    required: true,
+    select: false, // IMPORTANT: don't return password by default
+  },
+},
+{ versionKey: false }
+);
+
+userSchema.statics.findUserByCredentials = function (email, password) {
+  return this.findOne({ email })
+    .select("+password")
+    .then((user) => {
+      if (!user) {
+        return Promise.reject(new Error("Unauthorized"));
+      }
+
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          return Promise.reject(new Error("Unauthorized"));
+        }
+        return user;
+      });
+    });
+};
 
 module.exports = mongoose.model("user", userSchema);
