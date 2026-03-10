@@ -1,18 +1,19 @@
-const User = require("../models/user");
-const { NOT_FOUND, BAD_REQUEST, INTERNAL_SERVER_ERROR, CONFLICT, UNAUTHORIZED } = require('../utils/errors');
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../utils/config');
-
+const User = require("../models/user");
+const { NOT_FOUND, BAD_REQUEST, INTERNAL_SERVER_ERROR, CONFLICT } = require('../utils/errors');
 
 const createUser = (req, res) => {
+  const { email, password, name, avatar } = req.body;
+
   if (!email || !password) {
     return res.status(BAD_REQUEST).send({ 
       message: 'The "email" and "password" fields are required' 
     });
   }
 
-  bcrypt
+  return bcrypt
     .hash(password, 10)
     .then((hash) =>
       User.create({
@@ -22,14 +23,14 @@ const createUser = (req, res) => {
         password: hash,
       })
     )
-    .then((user) => {
-      return res.status(201).send({
+    .then((user) =>
+      res.status(201).send({
         _id: user._id,
         name: user.name,
         avatar: user.avatar,
         email: user.email
-      });
-    })
+      })
+    )
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid data" });
@@ -49,6 +50,12 @@ const createUser = (req, res) => {
 const login = (req, res) => {
   const { email, password } = req.body;
 
+  if (!email || !password) {
+    return res.status(BAD_REQUEST).send({ 
+      message: 'The "email" and "password" fields are required' 
+    });
+  }
+
   return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
@@ -59,9 +66,14 @@ const login = (req, res) => {
 
       res.send({ token });
     })
-    .catch(() => {
-      // invalid email/password
-      res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
+    .catch((err) => {
+      if (err.message === "Unauthorized") {
+        // This means the email/password combination was wrong
+        return res.status(401).send({ message: 'Incorrect email or password' });
+      }
+      
+      // For any other error (database issues, network problems, etc.)
+      return res.status(500).send({ message: 'An error occurred on the server' });
     });
 };
 
