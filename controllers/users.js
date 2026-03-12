@@ -69,11 +69,11 @@ const login = (req, res) => {
     .catch((err) => {
       if (err.message === "Unauthorized") {
         // This means the email/password combination was wrong
-        return res.status(401).send({ message: 'Incorrect email or password' });
+        return res.status(UNAUTHORIZED).send({ message: 'Incorrect email or password' });
       }
       
       // For any other error (database issues, network problems, etc.)
-      return res.status(500).send({ message: 'An error occurred on the server' });
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'An error has occurred on the server' });
     });
 };
 
