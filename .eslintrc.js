@@ -21,9 +21,8 @@ module.exports = {
     ecmaVersion: "latest",
     sourceType: "module",
   },
-  rules: {
-    "no-console": ["warn", { allow: ["error"] }],
-
+  "rules": {
+    "no-unused-vars": ["error", { "argsIgnorePattern": "next" }],
     "no-underscore-dangle": [
       "error",
       {
