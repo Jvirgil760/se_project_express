@@ -1,3 +1,9 @@
+## About the Project
+
+Deployed Domain: ** https://wtwr-p15.jumpingcrab.com
+
+Frontend GitHub Repo: **[se_project_react](https://github.com/Jvirgil760/se_project_react)**
+
 # WTWR (What to Wear?): Back End
 The back-end project is focused on creating a server for the WTWR application. You’ll gain a deeper understanding of how to work with databases, set up security and testing, and deploy web applications on a remote machine. The eventual goal is to create a server with an API and user authorization.
 ## Running the Project
